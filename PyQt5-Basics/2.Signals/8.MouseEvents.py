@@ -1,3 +1,8 @@
+"""
+One of the main events which widgets receive is the QMouseEvent. QMouseEvent events are created for each and every mouse movement and button click on a widget. The following event handlers are available for handling mouse events --
+"""
+
+
 import sys
 
 from PyQt5.QtCore import Qt
