@@ -48,9 +48,9 @@ class MainWindow(QMainWindow):
 
         layout1.addLayout(layout3)
 
-
-        
-
+        # margins
+        layout1.setContentsMargins(0,0,0,0)
+        layout1.setSpacing(10)
 
         widget = QWidget()
         widget.setLayout(layout1)
