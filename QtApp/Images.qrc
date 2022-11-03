@@ -1,0 +1,8 @@
+<RCC>
+  <qresource prefix="newPrefix">
+    <file>LightSpeedPhotonics.jpeg</file>
+  </qresource>
+  <qresource prefix="newPrefix">
+    <file>LK.png</file>
+  </qresource>
+</RCC>
