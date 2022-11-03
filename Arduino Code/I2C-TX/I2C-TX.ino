@@ -1,7 +1,6 @@
 
 #define all_tx_Write 0x0D;  //  Register addresses  
 
-//#include "Keyboard.h" // for key events/
 
 #include <Wire.h>
 int in1 = A0;  // RSSI1
@@ -16,7 +15,7 @@ byte MSB;
 
 
 char *RegisterAddress[] = {
-  "0x04", "0x10", "0x41", "0x42", "0x43", "0x44", "0x45", "0x46", "0x47", "0x48", "0x49", "0x4A", "0X4B"
+  "0x04", "0x10", "0x41", "0x42", "0x43", "0x44", "0x45", "0x46", "0x47", "0x48", "0x49", "0x4A", "0x4B"
 };
 
 
@@ -26,10 +25,24 @@ char *DataValues[] = {
 
 
 
-String readString;
+
 int numberOfRegisters = 13;
 const char cancel = 'c';
 
+
+
+
+
+String regaddr;
+String dataInReg;
+
+
+
+
+const char * regChar = regaddr.c_str();
+
+
+const char * dataInRegChar = dataInReg.c_str();
 
 
 ///Initial Write to Device
@@ -37,8 +50,8 @@ void WriteToDevice() {
   for (int i = 0 ; i < numberOfRegisters ; i++) {
 
     Wire.beginTransmission(Tx);
-    Wire.write(RegisterAddress[i]);
-    Wire.write(DataValues[i]);
+    Wire.write(RegisterAddress[i], DataValues[i]);
+    //    Wire.write(DataValues[i]);/
     Wire.endTransmission();
     Serial.print("Programmed Register ");
     Serial.print(RegisterAddress[i]);
@@ -56,21 +69,17 @@ void WriteToDevice() {
 void ModifyRegisterValue() {
 
 
-  Serial.println(" Please Enter the Register Address and Data Values");
-  Serial.print("Register Address: ");
-  String RegAddr = Serial.readString();
-  RegAddr.trim(); // remove any \r \n whitespace at the end of the String
-  String dataInReg = Serial.readString();
+
+  Wire.beginTransmission(Tx);
+  Wire.write(regChar);
+  Wire.write(dataInRegChar);
+  Wire.endTransmission();
 
 
-
-
-  Serial.print(" Register Address: ");
-  Serial.println(RegAddr);
-  Serial.print(" Data Value: ");
-  Serial.print(dataInReg);
-
-  //  Result();
+  Serial.print(" Updated Register : ");
+  Serial.print(regaddr);
+  Serial.print(" with Data Value: ");
+  Serial.println(dataInReg);
 
 }
 
@@ -105,31 +114,56 @@ void Result() {
   delay (2000);
 }
 
+
+
+
+
 void loop()
 {
 
-  Serial.println("Press 'c' to interrupt");
-  // check for control c on key press
+
+
   while (Serial.available() == 0) {
-  };
-
-  char c = Serial.read();
-  readString += c;
-  //Serial.println(readString);
-
-  if (c == cancel) {
-    Serial.print("--Interrupt occured with: ", cancel);
-    Serial.println(cancel);
-    Serial.println(" Please Enter the Register Address & Data Values");
-    Serial.print("Register Address: ");
-
-    String RegAddr = Serial.readString();
-    Serial.print(" Modified Register: ");
-    Serial.println(RegAddr);
-    RegAddr.trim(); // remove any \r \n whitespace at the end of the String
+    Result();
+  }     //wait for data available
+  String teststr = Serial.readString();  //read until timeout
+  teststr.trim();                        // remove any \r \n whitespace at the end of the String
+  if (teststr == "c") {
+    Serial.print("Control Interrupted with ");
+    Serial.println(teststr);
+    Serial.println("Please Enter Register Value: ");
+    while (Serial.available() == 0) {}     //wait for data available
+    regaddr = Serial.readString();  //read until timeout
+    regaddr.trim();
+    if (regaddr) {
+      Serial.println("Register Address:");
+      Serial.println(regaddr);
+      delay(500);
+    }
+    Serial.println("Please Enter Data Value: ");
+    while (Serial.available() == 0) {}     //wait for data available
+    dataInReg = Serial.readString();  //read until timeout
+    dataInReg.trim();
+    if (dataInReg) {
+      Serial.println("Data Value:");
+      Serial.println(dataInReg);
+    }
   }
 
 
 
-    return ;
+  //  Serial.print("Updated Register ");
+  //  Serial.print(regaddr);
+  //  Serial.print(" with Data Value ");
+  //  Serial.println(dataInReg);
+  //  delay(200);
+
+  ModifyRegisterValue();
+
+
+
+
 }
+
+
+
