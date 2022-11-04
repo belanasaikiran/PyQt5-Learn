@@ -1,3 +1,5 @@
+#include <Wire.h>
+
 
 #define all_tx_Write 0x0D;  //  Register addresses  
 
@@ -9,17 +11,18 @@ int out1 = A2; // Imon1
 int out2 = A3; // Imon2
 int Tx = 0x77; // Tx Address
 // int Rx = ""/; // Rx Address
-byte MSB;
-// byte LSB;
 
 
 
-char *RegisterAddress[] = {
+
+char * RegisterAddress[] = {
   "0x04", "0x10", "0x41", "0x42", "0x43", "0x44", "0x45", "0x46", "0x47", "0x48", "0x49", "0x4A", "0x4B"
 };
 
 
-char *DataValues[] = {
+
+
+ char * DataValues[] = {
   "0x10", "0x10", "0x08", "0x08", "0x08", "0x08", "0x08", "0x08", "0x08", "0x08", "0x08", "0x08", "0x08"
 };
 
@@ -50,8 +53,7 @@ void WriteToDevice() {
   for (int i = 0 ; i < numberOfRegisters ; i++) {
 
     Wire.beginTransmission(Tx);
-    Wire.write(RegisterAddress[i], DataValues[i]);
-    //    Wire.write(DataValues[i]);/
+    Wire.write(RegisterAddress[i], (unsigned int) DataValues[i]);
     Wire.endTransmission();
     Serial.print("Programmed Register ");
     Serial.print(RegisterAddress[i]);
@@ -164,6 +166,3 @@ void loop()
 
 
 }
-
-
-
