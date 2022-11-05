@@ -1,2 +1,3 @@
 # LK-Test-GUI
-using PyQt5
+
+Create Qt5 Application using PyQt5
